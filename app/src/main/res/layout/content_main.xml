@@ -14,29 +14,12 @@
     tools:showIn="@layout/activity_main">
 
     <Button
-        android:text="H"
+        android:id="@+id/submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText"
-        android:layout_alignRight="@+id/editText"
-        android:layout_alignEnd="@+id/editText"
-        android:layout_marginRight="139dp"
-        android:layout_marginEnd="139dp"
         android:layout_marginTop="24dp"
-        android:id="@+id/submit" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="numberPassword"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:singleLine="true"
-        android:selectAllOnFocus="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:text="testing" />
+        android:text="一周天氣" />
 
     <Button
         android:id="@+id/button"
@@ -46,6 +29,46 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/submit"
         android:layout_marginTop="21dp"
-        android:text="kkkk" />
+        android:text="PM2.5" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button"
+        android:layout_marginTop="26dp"
+        android:text="youbike" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/submit"
+        android:layout_marginEnd="67dp"
+        android:layout_marginRight="67dp"
+        android:text="GOOGLE MAP" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="TextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="400dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        app:srcCompat="@drawable/advertising" />
 
 </RelativeLayout>
