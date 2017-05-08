@@ -7,11 +7,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        admob();
         btn_weather = (Button) findViewById(R.id.button_weather);
         btn_pm = (Button) findViewById(R.id.button_pm);
         btn_youbike = (Button) findViewById(R.id.button_youbike);
@@ -34,6 +38,15 @@ public class MainActivity extends AppCompatActivity {
         btn_weather.setOnClickListener(btnw);
         btn_pm.setOnClickListener(btnp);
         btn_youbike.setOnClickListener(btny);
+
+
+    }
+
+    private void admob(){
+        AdView mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB").build(); //測試用廣告
+        Log.d("DEVICE_ID_EMULATOR",AdRequest.DEVICE_ID_EMULATOR);
+        mAdView.loadAd(adRequest);
     }
 
     private OnClickListener btnw = new OnClickListener() {
@@ -66,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
