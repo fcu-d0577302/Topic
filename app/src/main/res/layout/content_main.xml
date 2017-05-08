@@ -66,9 +66,10 @@
         android:id="@+id/imageView"
         android:layout_width="400dp"
         android:layout_height="100dp"
+        app:srcCompat="@drawable/advertising"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        app:srcCompat="@drawable/advertising" />
+        android:layout_marginBottom="27dp" />
 
 </RelativeLayout>
