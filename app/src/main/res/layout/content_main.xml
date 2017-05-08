@@ -15,60 +15,74 @@
 
     <Button
         android:id="@+id/button_weather"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText"
-        android:layout_marginTop="24dp"
-        android:text="一周天氣" />
+        android:text="一周天氣"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:visibility="visible"
+        android:layout_marginTop="44dp"
+        android:layout_below="@+id/button3"
+        android:layout_alignLeft="@+id/button_pm"
+        android:layout_alignStart="@+id/button_pm" />
 
     <Button
         android:id="@+id/button_pm"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/button3"
-        android:text="PM2.5" />
+        android:text="PM2.5"
+        android:layout_alignBaseline="@+id/button3"
+        android:layout_alignBottom="@+id/button3"
+        android:layout_toRightOf="@+id/button3"
+        android:layout_toEndOf="@+id/button3"
+        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp" />
 
     <Button
         android:id="@+id/button_youbike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/button3"
-        android:layout_marginTop="77dp"
-        android:text="youbike" />
+        android:text="youbike"
+        android:layout_alignBaseline="@+id/button_weather"
+        android:layout_alignBottom="@+id/button_weather"
+        android:layout_alignLeft="@+id/button3"
+        android:layout_alignStart="@+id/button3"
+        android:layout_toStartOf="@+id/button_weather"
+        android:layout_alignRight="@+id/button3"
+        android:layout_alignEnd="@+id/button3" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="26dp"
-        android:layout_marginRight="26dp"
         android:text="GOOGLE MAP"
-        android:layout_alignBaseline="@+id/button_weather"
-        android:layout_alignBottom="@+id/button_weather"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:layout_marginLeft="60dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="34dp"
+        android:layout_below="@+id/imageView2"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:text="TextView"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentStart="true" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="400dp"
-        android:layout_height="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
         app:srcCompat="@drawable/advertising" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ibikelogo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
