@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/button3"
+        android:layout_below="@+id/button_googlemap"
         android:text="PM2.5" />
 
     <Button
@@ -32,12 +32,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/button3"
+        android:layout_below="@+id/button_googlemap"
         android:layout_marginTop="77dp"
         android:text="youbike" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/button_googlemap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="26dp"
