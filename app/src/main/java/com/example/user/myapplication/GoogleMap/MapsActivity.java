@@ -1,4 +1,4 @@
-package com.example.user.myapplication;
+package com.example.user.myapplication.GoogleMap;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,9 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.user.myapplication.GoogleMap.DirectionFinder;
-import com.example.user.myapplication.GoogleMap.DirectionFinderListener;
-import com.example.user.myapplication.GoogleMap.Route;
+import com.example.user.myapplication.R;
+import com.example.user.myapplication.YouBike;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -51,9 +50,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
 
-    static int Navigation=0;         //0=非導航 1=導航模式
-    static double MyLat=0;
-    static double MyLng=0;
+    protected static int Navigation=0;         //0=非導航 1=導航模式
+    protected static double MyLat=0;
+    protected static double MyLng=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +64,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        init();
+    }
+
+    private void init(){
         navigateBt=(Button)findViewById(R.id.gmBt);
         navigateBt.setOnClickListener(BtListener);
 
         intent=getIntent();
         youBikes=(ArrayList<YouBike>) intent.getSerializableExtra("youBikes");
-        buildGoogleApiClient();
+        buildGoogleApiClient();           //打開GOOGLEMAP API 取得GPS
     }
 
     @Override
@@ -78,7 +82,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for(int i=0;i<youBikes.size();i++){               //匯入所有的youbike
             LatLng local=new LatLng(youBikes.get(i).getLat(),youBikes.get(i).getLng());
-            //mMap.addMarker(new MarkerOptions().position(local).title(youBikes.get(i).getSna()));
             MarkerOptions markerOptions=new MarkerOptions();
             markerOptions.position(local)
                     .title(youBikes.get(i).getSna())
@@ -86,16 +89,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(markerOptions);
         }
 
-        mMap.setInfoWindowAdapter(InfoWindowAdapter);      //點下去跑出資訊視窗
-        mMap.setMyLocationEnabled(true);                    //點下去移動我的位置
-        mMap.setOnMarkerClickListener(markerClickListener);
+        mMap.setMyLocationEnabled(true);                        //點下去移動我的位置  右上角的按鈕
+        mMap.setInfoWindowAdapter(InfoWindowAdapter);          //marker點下去跑出資訊視窗
+        mMap.setOnMarkerClickListener(markerClickListener); //marker點下發生事件
 
-        LatLng fcu=new LatLng(24.178808,120.646797);         //預設逢甲大學
+        LatLng fcu=new LatLng(24.178808,120.646797);             //預設逢甲大學
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fcu,15));
 
     }
 
-    private String getYoubikeInfo(YouBike youBike){            //infolayout要用的資料
+    View.OnClickListener BtListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Navigation=1;           //導航模式
+            Toast.makeText(MapsActivity.this,"請點選一個站點",Toast.LENGTH_LONG).show();
+        }
+    };
+
+    public String getYoubikeInfo(YouBike youBike){            //infolayout要用的資料
         StringBuffer sb=new StringBuffer("");
         sb.append(youBike.getSarea()+"\n")
                 .append(youBike.getAr()+"\n")
@@ -104,6 +115,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .append(youBike.getMday()+"\n");
         return sb.toString();
     }
+
+    GoogleMap.OnMarkerClickListener markerClickListener=new GoogleMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            if(MapsActivity.Navigation==1){
+                mGoogleApiClient.connect();    //可以取得最新經緯
+                sendRequest(MyLat,MyLng,marker.getPosition().latitude,marker.getPosition().longitude);
+                Log.d("YOUBIKE",marker.getPosition().latitude+" "+marker.getPosition().longitude);
+                Navigation=0;
+                return true;
+            }else{
+                return false;
+            }
+        }
+    };
 
     GoogleMap.InfoWindowAdapter InfoWindowAdapter=new GoogleMap.InfoWindowAdapter() {
         @Override
@@ -116,7 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String youbikeTitle=marker.getTitle();
             String youbikeInfo[]=marker.getSnippet().split("\n");
 
-            View viwe=MapsActivity.this.getLayoutInflater().inflate(R.layout.infolayout,null);
+            View viwe=getLayoutInflater().inflate(R.layout.infolayout,null);
             TextView tv1=(TextView) viwe.findViewById(R.id.ybTv1);
             TextView tv2=(TextView) viwe.findViewById(R.id.ybTv2);
             TextView tv3=(TextView) viwe.findViewById(R.id.ybTv3);
@@ -134,6 +160,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    private void sendRequest(double myLat,double myLng,double youbikeLat,double youbikeLng) {
+        String origin="origin=" + myLat + "," +myLng;
+        String destination="destination=" + youbikeLat + "," + youbikeLng;
+        try {
+            new DirectionFinder(MapsActivity.this, origin, destination).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 
     protected synchronized void buildGoogleApiClient(){
         mGoogleApiClient=new GoogleApiClient.Builder(MapsActivity.this)
@@ -143,24 +178,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
     }
 
-
-    GoogleMap.OnMarkerClickListener markerClickListener=new GoogleMap.OnMarkerClickListener() {
-        @Override
-        public boolean onMarkerClick(Marker marker) {
-            if(Navigation==1){
-                sendRequest();
-                Navigation=0;
-                return true;
-            }else{
-                return false;
-            }
-        }
-    };
-
-
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        mLocation=LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    public void onConnected(@Nullable Bundle bundle) {   //GoogleApiClient.ConnectionCallbacks介面
+        mLocation=LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);  //取得目前最新位置
         if(mLocation!=null){
             MyLat=mLocation.getLatitude();
             MyLng=mLocation.getLongitude();
@@ -180,26 +200,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
-    }
-
-
-    View.OnClickListener BtListener=new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Navigation=1;
-            Toast.makeText(MapsActivity.this,"請點選一個站點",Toast.LENGTH_LONG).show();
-            //sendRequest();
-        }
-    };
-
-    private void sendRequest() {
-        String origin="origin=" + 24.178808 + "," +120.646797;
-        String destination="destination=" + 24.175898 + "," + 120.645329;
-        try {
-            new DirectionFinder(MapsActivity.this, origin, destination).execute();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -232,14 +232,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (Route routes : route) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.startLocation, 16));
 
-            originMarkers.add(mMap.addMarker(new MarkerOptions()
+            /*originMarkers.add(mMap.addMarker(new MarkerOptions()
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
                     .title(routes.startAddress)
                     .position(routes.startLocation)));
             destinationMarkers.add(mMap.addMarker(new MarkerOptions()
                     //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker))
                     .title("cow meal")
-                    .position(routes.endLocation)));
+                    .position(routes.endLocation)));*/
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
