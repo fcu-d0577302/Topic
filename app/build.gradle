@@ -29,5 +29,5 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'org.jsoup:jsoup:1.10.2'
     compile 'com.google.android.gms:play-services:6.+'
-
+    compile 'com.mcxiaoke.volley:library:1.0.19'
 }

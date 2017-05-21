@@ -26,25 +26,4 @@
         android:textSize="20dp"
         android:text="text" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ybTv4"
-        android:textSize="20dp"
-        android:text="text" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ybTv5"
-        android:textSize="20dp"
-        android:text="text" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ybTv6"
-        android:textSize="20dp"
-        android:text="text" />
-
 </LinearLayout>

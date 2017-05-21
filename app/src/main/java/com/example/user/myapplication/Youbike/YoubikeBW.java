@@ -1,7 +1,11 @@
-package com.example.user.myapplication;
+package com.example.user.myapplication.Youbike;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.user.myapplication.FunctionListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -15,21 +19,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class YoubikeBW extends AsyncTask<String,Void,String> {
+public class YoubikeBW extends AsyncTask<String,Integer,String> {
 
     private Elements elements;
     private Document doc;
     private Element e;
     private static final String URL="http://i.youbike.com.tw/cht/f11.php";
     private FunctionListener functionListener;
-    ArrayList<YouBike> youBikes=new ArrayList<YouBike>();
+    ArrayList<YouBike> youBikes=new ArrayList<>();
+    Context context;
 
-    public YoubikeBW(FunctionListener listener){
+    public YoubikeBW(FunctionListener listener,Context context){
         functionListener=listener;
+        this.context=context;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
     }
 
     @Override
     protected String doInBackground(String... params) {
+        String YoubikeInfo=getInfo();
+        parseJson(YoubikeInfo);
+        return YoubikeInfo;
+    }
+
+    public String getInfo(){
         try {
             doc= Jsoup.connect(URL).timeout(10000).get();
             elements=doc.getElementsByTag("script");
@@ -41,24 +58,22 @@ public class YoubikeBW extends AsyncTask<String,Void,String> {
             sb.append(dataNode.get(0).getWholeData());
 
             return sb.toString();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-
+    public void parseJson(String result){
         String[] str=result.split("siteContent");
         String s=str[2].substring(2,str[2].length()-2);   //剃好了 JSON格式
 
         int count=1;
+
         try {
             JSONObject jsonObject=new JSONObject(s);
             while(count<=7068) {                             //0001~7068 因為沒有照順序排
+                publishProgress(count);
                 String local = getLocal(count);
                 try {
                     JSONObject youbike = jsonObject.getJSONObject(local);
@@ -72,8 +87,14 @@ public class YoubikeBW extends AsyncTask<String,Void,String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
-        functionListener.setYoubike(youBikes);
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+
+        functionListener.setYoubike(youBikes);          //設置回去再Main的youbikes
+        //functionListener.setYouBikeCity(youBikes);
     }
 
     public String getLocal(int count){                        //int轉字串前面補0的處理
@@ -99,7 +120,7 @@ public class YoubikeBW extends AsyncTask<String,Void,String> {
             youBike.setSv(jsonObject.getInt("sv"));
             youBikes.add(youBike);
         } catch (JSONException e1) {
-            e1.printStackTrace();
+            //e1.printStackTrace();
         }
     }
 

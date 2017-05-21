@@ -1,5 +1,6 @@
 package com.example.user.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,19 +13,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.user.myapplication.GoogleMap.MapsActivity;
+import com.example.user.myapplication.Youbike.YouBike;
+import com.example.user.myapplication.Youbike.YoubikeBW;
+
+import com.example.user.myapplication.Youbike.YoubikeRunnable;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
 import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity implements FunctionListener{
 
 
     Button btn_weather,btn_pm,btn_youbike,btn_googlemap;
-;
-
+    ProgressDialog progressDialog;
     ArrayList<YouBike> youBikes;
+    long start,end;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +41,15 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        InputYouBike();
         admob();
+
+
         btn_weather = (Button) findViewById(R.id.button_weather);
         btn_pm = (Button) findViewById(R.id.button_pm);
         btn_youbike = (Button) findViewById(R.id.button_youbike);
         btn_googlemap=(Button)findViewById(R.id.button_googlemap) ;
+
 
 
         btn_weather.setOnClickListener(btnw);
@@ -47,8 +58,12 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         btn_googlemap.setOnClickListener(btgooglemap);
 
 
-        InputYouBike();
 
+    }
+
+    public void InputYouBike(){
+        YoubikeBW youbikeBW=new YoubikeBW(MainActivity.this,this);
+        youbikeBW.execute();
     }
 
     private void admob(){
@@ -87,6 +102,10 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     private OnClickListener btny = new OnClickListener() {
         @Override
         public void onClick(View v) {
+            Log.d("YOUBIKE_SIZE",youBikes.size()+"");
+            for(int i=0;i<youBikes.size();i++){
+                System.out.println(i+":"+youBikes.get(i).getCity());
+            }
         }
     };
 
@@ -101,17 +120,51 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         }
     };
 
-
-    public void InputYouBike(){
-        YoubikeBW youbikeBW=new YoubikeBW(MainActivity.this);
-        youbikeBW.execute();
-    }
-
     @Override
     public void setYoubike(ArrayList<YouBike> youbike) {
         youBikes=youbike;
     }
 
+    @Override
+    public void setYouBikeCity(ArrayList<YouBike> youbike){
+        progressDialog=new ProgressDialog(this);
+        progressDialog.setTitle("YOUBIKE");
+        progressDialog.setMessage("載入資料中...");
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        Log.d("Runnable","現成啟動"+youbike.size());
+        start=System.currentTimeMillis();
+
+        YoubikeRunnable youbikeRunnable=new YoubikeRunnable(this,youbike.size());
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        for(int i=0;i<youbike.size();i++){
+            requestQueue.add(youbikeRunnable.getRequest(youbike.get(i),i));
+            try {
+                Thread.sleep(101);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        end=System.currentTimeMillis();
+        Log.d("Runnable","現成結束 "+(double)(end-start)/1000);
+        progressDialog.dismiss();
+        /*Boolean flag=true;
+        while(flag){
+            flag=true;
+            for(int i=0;i<youbike.size();i++){
+                if(youbike.get(i).getCity().equals("")){
+                    requestQueue.add(youbikeRunnable.getRequest(youbike.get(i),i));
+                    flag=false;
+                }
+            }
+            if(flag){
+
+            }
+        }*/
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

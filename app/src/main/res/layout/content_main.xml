@@ -10,6 +10,8 @@
     tools:context="com.example.user.myapplication.MainActivity"
     tools:showIn="@layout/activity_main">
 
+
+
     <Button
         android:id="@+id/button_weather"
         android:layout_width="wrap_content"

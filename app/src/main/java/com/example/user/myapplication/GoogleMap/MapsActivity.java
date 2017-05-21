@@ -9,12 +9,12 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.user.myapplication.R;
-import com.example.user.myapplication.YouBike;
+import com.example.user.myapplication.Youbike.YouBike;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -22,6 +22,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -41,7 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Intent intent;
     ArrayList<YouBike> youBikes;
 
-    private Button navigateBt;
+    private ImageButton navigateBt,backBt;
     private Location mLocation;
     private GoogleApiClient mGoogleApiClient;
     protected static final String TAG="MapsActivity";
@@ -68,8 +69,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void init(){
-        navigateBt=(Button)findViewById(R.id.gmBt);
+        navigateBt=(ImageButton)findViewById(R.id.gmBt);
         navigateBt.setOnClickListener(BtListener);
+
+        backBt=(ImageButton)findViewById(R.id.back);
+        backBt.setOnClickListener(BackListener);
 
         intent=getIntent();
         youBikes=(ArrayList<YouBike>) intent.getSerializableExtra("youBikes");
@@ -86,7 +90,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             markerOptions.position(local)
                     .title(youBikes.get(i).getSna())
                     .snippet(getYoubikeInfo(youBikes.get(i)));
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+
             mMap.addMarker(markerOptions);
+
         }
 
         mMap.setMyLocationEnabled(true);                        //點下去移動我的位置  右上角的按鈕
@@ -106,11 +113,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
+    View.OnClickListener BackListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            finish();
+        }
+    };
+
     public String getYoubikeInfo(YouBike youBike){            //infolayout要用的資料
         StringBuffer sb=new StringBuffer("");
-        sb.append(youBike.getSarea()+"\n")
-                .append(youBike.getAr()+"\n")
-                .append(youBike.getSbi()+"\n")
+        sb.append(youBike.getSbi()+"\n")
                 .append(youBike.getBemp()+"\n")
                 .append(youBike.getMday()+"\n");
         return sb.toString();
@@ -146,16 +158,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             TextView tv1=(TextView) viwe.findViewById(R.id.ybTv1);
             TextView tv2=(TextView) viwe.findViewById(R.id.ybTv2);
             TextView tv3=(TextView) viwe.findViewById(R.id.ybTv3);
-            TextView tv4=(TextView) viwe.findViewById(R.id.ybTv4);
-            TextView tv5=(TextView) viwe.findViewById(R.id.ybTv5);
-            TextView tv6=(TextView) viwe.findViewById(R.id.ybTv6);
+
 
             tv1.setText("場站名稱:"+youbikeTitle);
-            tv2.setText("場站區域:"+youbikeInfo[0]);
-            tv3.setText("地址:"+youbikeInfo[1]);
-            tv4.setText("可借車位數:"+youbikeInfo[2]);
-            tv5.setText("可還空位數:"+youbikeInfo[3]);
-            tv6.setText("資料更新時間:"+youbikeInfo[4]);
+            tv2.setText("可借/可停:"+youbikeInfo[0]+"/"+youbikeInfo[1]);
+            tv3.setText("更新時間:"+youbikeInfo[2]);
             return viwe;
         }
     };

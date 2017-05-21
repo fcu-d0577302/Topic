@@ -1,4 +1,4 @@
-package com.example.user.myapplication;
+package com.example.user.myapplication.Youbike;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ public class YouBike implements Serializable {
     private double lng;          //lng:經度
     private String mday;        //mday:資料更新時間
     private int sv;
-    private String city;
+    private String city="";
 
     public void setSno(int sno) {
         this.sno = sno;

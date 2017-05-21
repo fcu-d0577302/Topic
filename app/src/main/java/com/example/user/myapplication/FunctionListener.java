@@ -1,5 +1,7 @@
 package com.example.user.myapplication;
 
+import com.example.user.myapplication.Youbike.YouBike;
+
 import java.util.ArrayList;
 
 /**
@@ -7,4 +9,6 @@ import java.util.ArrayList;
  */
 public interface FunctionListener {
     void setYoubike(ArrayList<YouBike> youbike);
+    void setYouBikeCity(ArrayList<YouBike> youbike);
+
 }
