@@ -1,65 +1,52 @@
 package com.example.user.myapplication.Youbike;
 
-import android.content.Context;
 import android.util.Log;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+
 import com.example.user.myapplication.FunctionListener;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by Shang on 2017/5/17.
+ * Created by Shang on 2017/5/21.
  */
-public class YoubikeRunnable{
+public class YouBikeRunnable implements Runnable{
+    FunctionListener listener;
+    URL url;
+    HttpURLConnection httpURLConnection;
+    InputStream inputStream;
+    BufferedReader bufferedReader;
+    boolean flag=true;
 
-    FunctionListener functionListener;
-    int size=0;
+    YouBike youbike;
 
-    public YoubikeRunnable(FunctionListener functionListener,int size){
-        this.functionListener=functionListener;
-        this.size=size;
+    public YouBikeRunnable( YouBike youbike){
+        this.youbike=youbike;
     }
 
-    public JsonObjectRequest getRequest(final YouBike youBike, final int i){
-        String url=getUrl_City(youBike.getLat(),youBike.getLng());
-        Log.d("URL",url);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(url,null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        String city="";
-                        String json=response.toString();
-                        Log.d("josn",json);
-                        JSONObject object=null,results_object=null,ac_object=null;
-                        JSONArray results=null,ac_array=null;
-                        try{
-                            object=new JSONObject(json);
-                            results=object.getJSONArray("results");
-                            Log.d("results",results.length()+"");  //幹你的google api調用居然有速率限制 你他阿罵開好 每秒最多10個要求
-                            results_object=results.getJSONObject(0);             //會有問題
-                            ac_array=results_object.getJSONArray("address_components");
-                            ac_object=ac_array.getJSONObject(4);                      //有可能是3
-                            city=ac_object.getString("short_name");
-                            Log.d("City",city);
-                        }catch (JSONException e){
-                        }
-                        youBike.setCity(city);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        return jsonObjectRequest;
+    @Override
+    public void run() {
+        String urlcity=getUrl_City(youbike.getLat(), youbike.getLng());
+        openHttp(urlcity);
+        readCity();
+
+        while(flag){
+            try {
+                Thread.sleep(100);
+                openHttp(urlcity);
+                readCity();
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public String getUrl_City(double lat,double lng){
@@ -69,8 +56,48 @@ public class YoubikeRunnable{
                 .append(",")
                 .append(lng)
                 .append("&language=zh-TW&sensor=true");
-        //Log.d("URL",url_city.toString());
+        Log.d("URL",url_city.toString());
         return url_city.toString();
     }
 
+    public void openHttp(String urlcity){
+        try {
+            url=new URL(urlcity);
+            httpURLConnection=(HttpURLConnection)url.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setConnectTimeout(3000);
+            inputStream=httpURLConnection.getInputStream();
+            bufferedReader=new BufferedReader(new InputStreamReader(inputStream,"UTF-8"));
+
+        }  catch (MalformedURLException e) {
+            e.printStackTrace();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void readCity(){
+        String line="";
+        StringBuffer sb=new StringBuffer("");
+        try {
+            while((line=bufferedReader.readLine())!=null){
+                sb.append(line);
+                int a=line.indexOf("市"),b=line.indexOf("縣");
+                if(a!=-1){
+                    flag=false;
+                    youbike.setCity(line.substring(a-2,a+1));
+                    break;
+                }else if(b!=-1){
+                    flag=false;
+                    youbike.setCity(line.substring(b-2,b+1));
+                    break;
+                }
+            }
+            bufferedReader.close();
+            inputStream.close();
+            httpURLConnection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
