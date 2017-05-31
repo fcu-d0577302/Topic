@@ -11,27 +11,34 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.example.user.myapplication.GoogleMap.MapsActivity;
 import com.example.user.myapplication.Youbike.YouBike;
+import com.example.user.myapplication.Youbike.YouBikeRunnable;
 import com.example.user.myapplication.Youbike.YoubikeBW;
-
-import com.example.user.myapplication.Youbike.YoubikeRunnable;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static android.R.id.list;
 
 
 public class MainActivity extends AppCompatActivity implements FunctionListener{
 
 
-    Button btn_weather,btn_pm,btn_youbike,btn_googlemap;
+    public static final String TAG="YOUBIKE";
+    Button btn_weather,btn_pm,btn_googlemap,btn_list;
     ProgressDialog progressDialog;
     ArrayList<YouBike> youBikes;
     long start,end;
+    ExecutorService executorService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +54,13 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
 
         btn_weather = (Button) findViewById(R.id.button_weather);
         btn_pm = (Button) findViewById(R.id.button_pm);
-        btn_youbike = (Button) findViewById(R.id.button_youbike);
-        btn_googlemap=(Button)findViewById(R.id.button_googlemap) ;
-
-
+        btn_googlemap=(Button)findViewById(R.id.button_googlemap);
+        btn_list=(Button)findViewById(R.id.button_list);
 
         btn_weather.setOnClickListener(btnw);
         btn_pm.setOnClickListener(btnp);
-        btn_youbike.setOnClickListener(btny);
         btn_googlemap.setOnClickListener(btgooglemap);
-
-
+        btn_list.setOnClickListener(btlist);
 
     }
 
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         public void onClick(View v) {
             Log.d("YOUBIKE_SIZE",youBikes.size()+"");
             for(int i=0;i<youBikes.size();i++){
-                System.out.println(i+":"+youBikes.get(i).getCity());
+                Log.v("YOUBIKE",i+":"+youBikes.get(i).getCity());
             }
         }
     };
@@ -114,7 +117,18 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         public void onClick(View v) {
             Intent intent=new Intent(MainActivity.this,MapsActivity.class);
             Bundle bundle=new Bundle();
-            bundle.putSerializable("youBikes",youBikes);
+            bundle.putSerializable(TAG,youBikes);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    };
+
+    private OnClickListener btlist=new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent=new Intent(MainActivity.this,ListActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putSerializable(TAG,youBikes);
             intent.putExtras(bundle);
             startActivity(intent);
         }
@@ -137,33 +151,21 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         Log.d("Runnable","現成啟動"+youbike.size());
         start=System.currentTimeMillis();
 
-        YoubikeRunnable youbikeRunnable=new YoubikeRunnable(this,youbike.size());
-        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        executorService=Executors.newFixedThreadPool(10);
+
+
         for(int i=0;i<youbike.size();i++){
-            requestQueue.add(youbikeRunnable.getRequest(youbike.get(i),i));
-            try {
-                Thread.sleep(101);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            YouBikeRunnable youBikeRunnable=new YouBikeRunnable(youbike.get(i));
+            executorService.execute(youBikeRunnable);
         }
+
+        executorService.shutdown();
+
+        while(!executorService.isTerminated()){}
+
         end=System.currentTimeMillis();
         Log.d("Runnable","現成結束 "+(double)(end-start)/1000);
         progressDialog.dismiss();
-        /*Boolean flag=true;
-        while(flag){
-            flag=true;
-            for(int i=0;i<youbike.size();i++){
-                if(youbike.get(i).getCity().equals("")){
-                    requestQueue.add(youbikeRunnable.getRequest(youbike.get(i),i));
-                    flag=false;
-                }
-            }
-            if(flag){
-
-            }
-        }*/
-
     }
 
     @Override

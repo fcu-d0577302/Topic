@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.myapplication.MainActivity;
 import com.example.user.myapplication.R;
 import com.example.user.myapplication.Youbike.YouBike;
 import com.google.android.gms.common.ConnectionResult;
@@ -76,7 +77,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         backBt.setOnClickListener(BackListener);
 
         intent=getIntent();
-        youBikes=(ArrayList<YouBike>) intent.getSerializableExtra("youBikes");
+        youBikes=(ArrayList<YouBike>) intent.getSerializableExtra(MainActivity.TAG);
         buildGoogleApiClient();           //打開GOOGLEMAP API 取得GPS
     }
 
