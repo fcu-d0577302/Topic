@@ -4,10 +4,12 @@
     <string name="banner_ad_unit_id">ca-app-pub-3596318314144695/5174917562</string>
     <string name="title_activity_maps">Map</string>
 
-    <string-array name="str">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+    <string-array name="city">
+        <item>台北</item>
+        <item>基隆</item>
+        <item>新竹</item>
+        <item>桃園</item>
+        <item>台中</item>
+        <item>彰化</item>
     </string-array>
 </resources>

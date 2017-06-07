@@ -8,6 +8,12 @@
     android:orientation="vertical"
     tools:context="com.example.user.myapplication.ListActivity">
 
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dialog" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

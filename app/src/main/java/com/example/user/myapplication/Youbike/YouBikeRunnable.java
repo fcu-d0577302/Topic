@@ -18,14 +18,14 @@ import java.util.ArrayList;
  * Created by Shang on 2017/5/21.
  */
 public class YouBikeRunnable implements Runnable{
-    FunctionListener listener;
+
     URL url;
     HttpURLConnection httpURLConnection;
     InputStream inputStream;
     BufferedReader bufferedReader;
     boolean flag=true;
-
     YouBike youbike;
+    String city[]={"彰化縣","彰化市","新北市","基隆市","台北市","桃園市","台中市","新竹市"};
 
     public YouBikeRunnable( YouBike youbike){
         this.youbike=youbike;
@@ -42,7 +42,7 @@ public class YouBikeRunnable implements Runnable{
                 Thread.sleep(100);
                 openHttp(urlcity);
                 readCity();
-            }catch (InterruptedException e){
+            }catch (Exception e){
                 e.printStackTrace();
             }
         }
@@ -82,14 +82,18 @@ public class YouBikeRunnable implements Runnable{
         try {
             while((line=bufferedReader.readLine())!=null){
                 sb.append(line);
-                int a=line.indexOf("市"),b=line.indexOf("縣");
-                if(a!=-1){
+                //Log.v("CITY",sb.toString());
+                int[] a=new int[city.length];
+                for(int i=0;i<city.length;i++) {
+                    a[i] = line.indexOf(city[i]);
+                    if (a[i] != -1) {
+                        youbike.setCity(city[i]);
+                        Log.v("CITY", youbike.getCity());
+                        break;
+                    }
+                }
+                if(!youbike.getCity().equals("")){
                     flag=false;
-                    youbike.setCity(line.substring(a-2,a+1));
-                    break;
-                }else if(b!=-1){
-                    flag=false;
-                    youbike.setCity(line.substring(b-2,b+1));
                     break;
                 }
             }

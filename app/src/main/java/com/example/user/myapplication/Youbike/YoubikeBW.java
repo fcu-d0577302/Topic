@@ -1,5 +1,6 @@
 package com.example.user.myapplication.Youbike;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -28,6 +29,7 @@ public class YoubikeBW extends AsyncTask<String,Integer,String> {
     private FunctionListener functionListener;
     ArrayList<YouBike> youBikes=new ArrayList<>();
     Context context;
+
 
     public YoubikeBW(FunctionListener listener,Context context){
         functionListener=listener;
@@ -69,7 +71,6 @@ public class YoubikeBW extends AsyncTask<String,Integer,String> {
         String s=str[2].substring(2,str[2].length()-2);   //剃好了 JSON格式
 
         int count=1;
-
         try {
             JSONObject jsonObject=new JSONObject(s);
             while(count<=7068) {                             //0001~7068 因為沒有照順序排
@@ -94,7 +95,7 @@ public class YoubikeBW extends AsyncTask<String,Integer,String> {
         super.onPostExecute(result);
 
         functionListener.setYoubike(youBikes);          //設置回去再Main的youbikes
-        //functionListener.setYouBikeCity(youBikes);
+        functionListener.setYouBikeCity(youBikes);
     }
 
     public String getLocal(int count){                        //int轉字串前面補0的處理

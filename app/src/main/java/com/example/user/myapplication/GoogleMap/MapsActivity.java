@@ -56,6 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected static double MyLat=0;
     protected static double MyLng=0;
 
+    double lat=24.178808,lng=120.646797;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         intent=getIntent();
         youBikes=(ArrayList<YouBike>) intent.getSerializableExtra(MainActivity.TAG);
+        if(intent.getDoubleExtra("Lat",0.0)!=0.0)
+            lat=intent.getDoubleExtra("Lat",0.0);
+        if(intent.getDoubleExtra("Lng",0.0)!=0.0)
+            lng=intent.getDoubleExtra("Lng",0.0);
+        
         buildGoogleApiClient();           //打開GOOGLEMAP API 取得GPS
     }
 
@@ -101,7 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setInfoWindowAdapter(InfoWindowAdapter);          //marker點下去跑出資訊視窗
         mMap.setOnMarkerClickListener(markerClickListener); //marker點下發生事件
 
-        LatLng fcu=new LatLng(24.178808,120.646797);             //預設逢甲大學
+        LatLng fcu=new LatLng(lat,lng);             //預設逢甲大學
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fcu,15));
 
     }
