@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     long start,end;
     ExecutorService executorService;
 
+    SharedPreferences sp;
 
 
     @Override
@@ -104,15 +105,15 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         @Override
         public void onClick(View v) {
 
-            System.out.println(youBikes.size());
+            /*System.out.println(youBikes.size());
             for(int i=0;i<youBikes.size();i++){
                 System.out.println(i+":"+youBikes.get(i).getCity());
-            }
-            /*Uri uri = Uri.parse("http://www.cwb.gov.tw/V7/forecast/week/week.htm");//交通部中央氣象局
+            }*/
+            Uri uri = Uri.parse("http://www.cwb.gov.tw/V7/forecast/week/week.htm");//交通部中央氣象局
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(uri);
-            startActivity(intent);*/
+            startActivity(intent);
         }
     };
     private OnClickListener btnp = new OnClickListener() {

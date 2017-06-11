@@ -2,6 +2,8 @@ package com.example.user.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.icu.text.UnicodeSetSpanner;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -25,16 +27,22 @@ import java.util.Map;
 
 public class ListActivity extends AppCompatActivity {
 
+    public static final String SPTAG="FAVORITE";
 
     Intent YoubikeIntent;
     ArrayList<YouBike> youBikes;
+    ArrayList<YouBike> copyYouBikes=new ArrayList<>();
     ArrayList<ArrayList<YouBike>> city=new ArrayList<>();
+
     MyAdapter myAdapter;
-    final String cityName[]={"台北","基隆","新竹","桃園","台中","彰化"};
+    final String cityName[]={"台北","基隆","新竹","桃園","台中","彰化","常用"};
 
 
     ListView listView;
     Spinner spinner;
+
+    SharedPreferences sp;
+    int pos=0;
 
 
 
@@ -44,53 +52,115 @@ public class ListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list);
 
         YoubikeIntent=getIntent();
-        if(YoubikeIntent!=null)
+        if(YoubikeIntent!=null){
             youBikes=(ArrayList<YouBike>) YoubikeIntent.getSerializableExtra(MainActivity.TAG);
+            for(int i=0;i<youBikes.size();i++){
+                copyYouBikes.add(youBikes.get(i));     //如果用跟youbikes依樣那會項指標一樣,youbikes被清空,自己也會被清空,因為是指向一樣的地方
+            }
+        }
 
         SortCity();
+        init();
+    }
 
+    public void init(){
         listView=(ListView)findViewById(R.id.listview);
-
         myAdapter=new MyAdapter(this);
         listView.setAdapter(myAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(ListActivity.this, MapsActivity.class);
-                Bundle bundle=new Bundle();
-                bundle.putDouble("Lat",youBikes.get(position).getLat());
-                bundle.putDouble("Lng",youBikes.get(position).getLng());
-                bundle.putSerializable(MainActivity.TAG,youBikes);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+        listView.setOnItemClickListener(listOnItemClick);
+        listView.setOnItemLongClickListener(listOnItemLongClick);
 
         spinner=(Spinner)findViewById(R.id.spinner);
-        ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,
+        spinner.setAdapter(new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item,
-                cityName);
-        spinner.setAdapter(arrayAdapter);
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                youBikes.clear();
-                for(int i=0;i<city.get(position).size();i++){
-                    youBikes.add(city.get(position).get(i));
-                }
-                myAdapter.notifyDataSetChanged();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+                cityName));
+        spinner.setOnItemSelectedListener(spinnerItemClick);
 
 
     }
+
+    public void load(){
+
+        sp=getSharedPreferences("data",0);
+        String value=sp.getString("Value","0");
+        for(int i=0;i<Integer.parseInt(value);i++){
+            System.out.println(sp.getInt(String.valueOf(i),100));
+            System.out.println(sp.getString("sp"+String.valueOf(i),"NULL"));
+            String spName=sp.getString("sp"+String.valueOf(i),"NULL");         //站名
+
+            for(int j=0;j<copyYouBikes.size();j++){
+                System.out.println(copyYouBikes.get(j).getSna());
+                if(copyYouBikes.get(j).getSna().equals(spName)==true){
+                    youBikes.add(copyYouBikes.get(j));
+                    break;
+                }
+            }
+        }
+    }
+
+
+    AdapterView.OnItemClickListener listOnItemClick=new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent=new Intent(ListActivity.this, MapsActivity.class);
+            Bundle bundle=new Bundle();
+            bundle.putDouble("Lat",youBikes.get(position).getLat());
+            bundle.putDouble("Lng",youBikes.get(position).getLng());
+            bundle.putSerializable(MainActivity.TAG,youBikes);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    };
+
+    AdapterView.OnItemLongClickListener listOnItemLongClick=new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            Toast.makeText(ListActivity.this,city.get(pos).get(position).getSna(),Toast.LENGTH_SHORT).show();
+
+            if(sp.getString("Value","NULL").equals("NULL")){      //第一次新增,防止下次進入頁面時又是從0開始
+                sp.edit().putString("Value","0").commit();
+                Log.v(SPTAG,sp.getString("Value","NULL"));
+            }
+
+            int v=Integer.parseInt(sp.getString("Value","0"));
+            sp.edit().putInt(String.valueOf(v),v).commit();
+            sp.edit().putString("sp"+String.valueOf(v),city.get(pos).get(position).getSna()).commit();
+            Log.v(SPTAG,sp.getInt(String.valueOf(v),v)+"");
+            Log.v(SPTAG,sp.getString("sp"+String.valueOf(v),"NULL"));
+
+            sp.edit().putString("Value",String.valueOf(v+1)).commit();        //更新到下一筆
+
+            return true;
+        }
+    };
+
+    AdapterView.OnItemSelectedListener spinnerItemClick=new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            youBikes.clear();
+            pos=position;        //紀錄現在是哪一個縣市,長壓的時候要用到
+
+            if(position==cityName.length-1){
+                load();
+            }else{
+                for(int i=0;i<city.get(position).size();i++){
+                    youBikes.add(city.get(position).get(i));
+                }
+            }
+
+            myAdapter.notifyDataSetChanged();
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
+
+
+
 
     public void SortCity(){
 
