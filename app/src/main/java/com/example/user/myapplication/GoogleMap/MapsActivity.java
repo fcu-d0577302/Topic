@@ -1,6 +1,7 @@
 package com.example.user.myapplication.GoogleMap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.user.myapplication.ListActivity;
 import com.example.user.myapplication.MainActivity;
 import com.example.user.myapplication.R;
 import com.example.user.myapplication.Youbike.YouBike;
@@ -57,6 +59,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected static double MyLng=0;
 
     double lat=24.178808,lng=120.646797;
+
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +109,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setMyLocationEnabled(true);                        //點下去移動我的位置  右上角的按鈕
         mMap.setInfoWindowAdapter(InfoWindowAdapter);          //marker點下去跑出資訊視窗
-        mMap.setOnMarkerClickListener(markerClickListener); //marker點下發生事件
+        mMap.setOnMarkerClickListener(markerClickListener);      //marker點下發生事件
+        mMap.setOnInfoWindowClickListener(infoWindowClickListener);
 
         LatLng fcu=new LatLng(lat,lng);             //預設逢甲大學
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fcu,15));
@@ -147,6 +152,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }else{
                 return false;
             }
+        }
+    };
+
+    GoogleMap.OnInfoWindowClickListener infoWindowClickListener=new GoogleMap.OnInfoWindowClickListener() {
+        @Override
+        public void onInfoWindowClick(Marker marker) {
+            sp=getSharedPreferences("data",0);
+            int v=Integer.parseInt(sp.getString("Value","0"));
+            sp.edit().putString("sp"+String.valueOf(v),marker.getTitle()).commit();
+            sp.edit().putString("Value",String.valueOf(v+1)).commit();
+            Toast.makeText(MapsActivity.this,marker.getTitle()+" 加入常用站點",Toast.LENGTH_SHORT).show();
         }
     };
 

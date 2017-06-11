@@ -76,6 +76,8 @@ public class ListActivity extends AppCompatActivity {
                 cityName));
         spinner.setOnItemSelectedListener(spinnerItemClick);
 
+        sp=getSharedPreferences("data",0);
+
 
     }
 
@@ -115,20 +117,21 @@ public class ListActivity extends AppCompatActivity {
     AdapterView.OnItemLongClickListener listOnItemLongClick=new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            Toast.makeText(ListActivity.this,city.get(pos).get(position).getSna(),Toast.LENGTH_SHORT).show();
-
+            
             if(sp.getString("Value","NULL").equals("NULL")){      //第一次新增,防止下次進入頁面時又是從0開始
                 sp.edit().putString("Value","0").commit();
-                Log.v(SPTAG,sp.getString("Value","NULL"));
+                Log.v(SPTAG,sp.getString("Value","NULL")+"");
             }
 
             int v=Integer.parseInt(sp.getString("Value","0"));
             sp.edit().putInt(String.valueOf(v),v).commit();
-            sp.edit().putString("sp"+String.valueOf(v),city.get(pos).get(position).getSna()).commit();
+            sp.edit().putString("sp"+String.valueOf(v),city.get(pos).get(position).getSna()).commit();   //不能跟INT的KEY重複
             Log.v(SPTAG,sp.getInt(String.valueOf(v),v)+"");
             Log.v(SPTAG,sp.getString("sp"+String.valueOf(v),"NULL"));
 
             sp.edit().putString("Value",String.valueOf(v+1)).commit();        //更新到下一筆
+
+            Toast.makeText(ListActivity.this,city.get(pos).get(position).getSna()+" 加入常用站點",Toast.LENGTH_SHORT).show();
 
             return true;
         }
