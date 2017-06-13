@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     public void setYouBikeCity(ArrayList<YouBike> youbike){
 
         testBW t=new testBW(this,youbike);
-        t.execute();
+        //t.execute();
         /*Log.d("Runnable","現成啟動"+youbike.size());
         start=System.currentTimeMillis();
 
