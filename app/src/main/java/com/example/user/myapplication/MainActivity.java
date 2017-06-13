@@ -23,6 +23,7 @@ import com.example.user.myapplication.GoogleMap.MapsActivity;
 import com.example.user.myapplication.Youbike.YouBike;
 import com.example.user.myapplication.Youbike.YouBikeRunnable;
 import com.example.user.myapplication.Youbike.YoubikeBW;
+import com.example.user.myapplication.Youbike.testBW;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import java.util.ArrayList;
@@ -55,11 +56,17 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        progressDialog=new ProgressDialog(this);
-        progressDialog.setMessage("載入資料中...");
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
+        /*runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog=new ProgressDialog(MainActivity.this);
+                progressDialog.setMessage("載入資料中...");
+                progressDialog.setCancelable(false);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.show();
+            }
+        });*/
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,15 +112,15 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         @Override
         public void onClick(View v) {
 
-            /*System.out.println(youBikes.size());
+            System.out.println(youBikes.size());
             for(int i=0;i<youBikes.size();i++){
                 System.out.println(i+":"+youBikes.get(i).getCity());
-            }*/
-            Uri uri = Uri.parse("http://www.cwb.gov.tw/V7/forecast/week/week.htm");//交通部中央氣象局
+            }
+            /*Uri uri = Uri.parse("http://www.cwb.gov.tw/V7/forecast/week/week.htm");//交通部中央氣象局
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(uri);
-            startActivity(intent);
+            startActivity(intent);*/
         }
     };
     private OnClickListener btnp = new OnClickListener() {
@@ -158,12 +165,14 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     @Override
     public void setYouBikeCity(ArrayList<YouBike> youbike){
 
-        Log.d("Runnable","現成啟動"+youbike.size());
+        testBW t=new testBW(this,youbike);
+        t.execute();
+        /*Log.d("Runnable","現成啟動"+youbike.size());
         start=System.currentTimeMillis();
 
         executorService=Executors.newFixedThreadPool(10);
 
-        for(int i=0;i<20;i++){
+        for(int i=0;i<youbike.size();i++){
             YouBikeRunnable youBikeRunnable=new YouBikeRunnable(youbike.get(i));
             executorService.execute(youBikeRunnable);
         }
@@ -173,8 +182,14 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         end=System.currentTimeMillis();
         Log.d("Runnable","現成結束 "+(double)(end-start)/1000);
 
-        progressDialog.hide();
-        progressDialog.dismiss();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.hide();
+                progressDialog.dismiss();
+            }
+        });*/
+
 
     }
 
