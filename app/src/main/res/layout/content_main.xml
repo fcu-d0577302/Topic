@@ -10,28 +10,53 @@
     tools:context="com.example.user.myapplication.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <Button
+        android:id="@+id/button_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="一周天氣" />
 
-        <Button
-            android:id="@+id/button_weather"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="27dp"
-            android:text="一周天氣"
-            android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/button_pm"
-            android:layout_alignStart="@+id/button_pm" />
+    <Button
+        android:id="@+id/button_pm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button3"
+        android:text="PM2.5" />
 
-        <Button
-            android:id="@+id/button_pm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PM2.5"
-            android:layout_marginLeft="19dp"
-            android:layout_marginStart="19dp"
-            android:layout_below="@+id/button_weather"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="60dp" />
+    <Button
+        android:id="@+id/button_youbike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/button3"
+        android:layout_marginTop="77dp"
+        android:text="youbike" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+        android:text="GOOGLE MAP"
+        android:layout_alignBaseline="@+id/button_weather"
+        android:layout_alignBottom="@+id/button_weather"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="TextView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
@@ -42,27 +67,5 @@
         ads:adSize="SMART_BANNER"
         ads:adUnitId="@string/banner_ad_unit_id">
     </com.google.android.gms.ads.AdView>
-
-    <Button
-        android:id="@+id/button_googlemap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/button_weather"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_toEndOf="@+id/button_weather"
-        android:layout_toRightOf="@+id/button_weather"
-        android:text="站點地圖" />
-
-    <Button
-        android:id="@+id/button_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/button_pm"
-        android:layout_alignLeft="@+id/button_googlemap"
-        android:layout_alignStart="@+id/button_googlemap"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:text="站點列表" />
 
 </RelativeLayout>
