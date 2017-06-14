@@ -8,16 +8,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.user.myapplication.GoogleMap.MapsActivity;
 import com.example.user.myapplication.Youbike.YouBike;
@@ -25,21 +20,17 @@ import com.example.user.myapplication.Youbike.YouBikeRunnable;
 import com.example.user.myapplication.Youbike.YoubikeBW;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static android.R.id.list;
 
 
 public class MainActivity extends AppCompatActivity implements FunctionListener{
 
     public static final String TAG="YOUBIKE";
 
-    Button btn_weather,btn_pm,btn_googlemap,btn_list;
+    Button btn_weather,btn_pm,btn_googlemap,btn_list,btn_nb;
     ProgressDialog progressDialog;
 
 
@@ -81,12 +72,13 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         btn_pm = (Button) findViewById(R.id.button_pm);
         btn_googlemap=(Button)findViewById(R.id.button_googlemap);
         btn_list=(Button)findViewById(R.id.button_list);
+        btn_nb=(Button)findViewById(R.id.button_nb);
 
         btn_weather.setOnClickListener(btnw);
         btn_pm.setOnClickListener(btnp);
         btn_googlemap.setOnClickListener(btgooglemap);
         btn_list.setOnClickListener(btlist);
-
+        btn_nb.setOnClickListener(btnbook);
 
     }
 
@@ -127,6 +119,13 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         }
     };
 
+    private OnClickListener btnbook = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent=new Intent(MainActivity.this,NoteBookActivity.class);
+            startActivity(intent);
+        }
+    };
 
     private OnClickListener btgooglemap = new OnClickListener() {
         @Override

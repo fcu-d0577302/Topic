@@ -65,4 +65,15 @@
         android:layout_marginStart="10dp"
         android:text="站點列表" />
 
+    <Button
+        android:id="@+id/button_nb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/button_googlemap"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:text="記事本" />
+
 </RelativeLayout>

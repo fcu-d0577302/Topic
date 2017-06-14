@@ -47,6 +47,8 @@
         <activity
             android:name=".GoogleMap.MapsActivity"
             android:label="@string/title_activity_maps" />
+        <activity android:name=".NoteEditor"/>
+        <activity android:name=".NoteBookActivity"/>
         <activity android:name=".ListActivity"></activity>
     </application>
 
