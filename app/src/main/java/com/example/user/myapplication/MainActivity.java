@@ -39,15 +39,8 @@ import static android.R.id.list;
 public class MainActivity extends AppCompatActivity implements FunctionListener{
 
     public static final String TAG="YOUBIKE";
-
     Button btn_weather,btn_pm,btn_googlemap,btn_list;
-    ProgressDialog progressDialog;
-
-
     ArrayList<YouBike> youBikes;
-    long start,end;
-    ExecutorService executorService;
-
     SharedPreferences sp;
 
 
@@ -55,18 +48,6 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        /*runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog=new ProgressDialog(MainActivity.this);
-                progressDialog.setMessage("載入資料中...");
-                progressDialog.setCancelable(false);
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progressDialog.show();
-            }
-        });*/
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -112,15 +93,15 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         @Override
         public void onClick(View v) {
 
-            System.out.println(youBikes.size());
+            /*System.out.println(youBikes.size());
             for(int i=0;i<youBikes.size();i++){
                 System.out.println(i+":"+youBikes.get(i).getCity());
-            }
-            /*Uri uri = Uri.parse("http://www.cwb.gov.tw/V7/forecast/week/week.htm");//交通部中央氣象局
+            }*/
+            Uri uri = Uri.parse("http://www.cwb.gov.tw/V7/forecast/week/week.htm");//交通部中央氣象局
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(uri);
-            startActivity(intent);*/
+            startActivity(intent);
         }
     };
     private OnClickListener btnp = new OnClickListener() {
@@ -135,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     };
 
 
-    private OnClickListener btgooglemap = new OnClickListener() {
+    private OnClickListener btgooglemap = new OnClickListener() {   //地圖模式
         @Override
         public void onClick(View v) {
             Intent intent=new Intent(MainActivity.this,MapsActivity.class);
@@ -148,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
 
     private OnClickListener btlist=new OnClickListener() {
         @Override
-        public void onClick(View v) {
+        public void onClick(View v) {       //列表模式
             Intent intent=new Intent(MainActivity.this,ListActivity.class);
             Bundle bundle=new Bundle();
             bundle.putSerializable(TAG,youBikes);
@@ -167,30 +148,6 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
 
         testBW t=new testBW(this,youbike);
         //t.execute();
-        /*Log.d("Runnable","現成啟動"+youbike.size());
-        start=System.currentTimeMillis();
-
-        executorService=Executors.newFixedThreadPool(10);
-
-        for(int i=0;i<youbike.size();i++){
-            YouBikeRunnable youBikeRunnable=new YouBikeRunnable(youbike.get(i));
-            executorService.execute(youBikeRunnable);
-        }
-
-        executorService.shutdown();
-        while(!executorService.isTerminated()){}
-        end=System.currentTimeMillis();
-        Log.d("Runnable","現成結束 "+(double)(end-start)/1000);
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                progressDialog.hide();
-                progressDialog.dismiss();
-            }
-        });*/
-
-
     }
 
     @Override
