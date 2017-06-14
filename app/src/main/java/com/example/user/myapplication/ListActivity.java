@@ -253,7 +253,7 @@ public class ListActivity extends AppCompatActivity {
             viewHolder.list_sbi.setText("可停:"+String.valueOf(youBike.getSbi())+"/");
             viewHolder.list_bemp.setText("可還:"+String.valueOf(youBike.getBemp()));
 
-            Log.v("TAG",youBike.getMday());
+            //Log.v("TAG",youBike.getMday());
             StringBuffer sb=new StringBuffer("");
             sb.append(youBike.getMday().substring(0,4)+"/")
                     .append(youBike.getMday().substring(4,6)+"/")

@@ -19,6 +19,7 @@ import com.example.user.myapplication.GoogleMap.MapsActivity;
 import com.example.user.myapplication.Youbike.YouBike;
 import com.example.user.myapplication.Youbike.YouBikeRunnable;
 import com.example.user.myapplication.Youbike.YoubikeBW;
+import com.example.user.myapplication.Youbike.testBW;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -32,26 +33,14 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     public static final String TAG="YOUBIKE";
 
     Button btn_weather,btn_pm,btn_googlemap,btn_list,btn_nb;
-    ProgressDialog progressDialog;
-
-
     ArrayList<YouBike> youBikes;
-    long start,end;
-    ExecutorService executorService;
 
-    SharedPreferences sp;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        progressDialog=new ProgressDialog(this);
-        progressDialog.setMessage("載入資料中...");
-        progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -157,24 +146,8 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
 
     @Override
     public void setYouBikeCity(ArrayList<YouBike> youbike){
-
-        Log.d("Runnable","現成啟動"+youbike.size());
-        start=System.currentTimeMillis();
-
-        executorService=Executors.newFixedThreadPool(10);
-
-        for(int i=0;i<20;i++){
-            YouBikeRunnable youBikeRunnable=new YouBikeRunnable(youbike.get(i));
-            executorService.execute(youBikeRunnable);
-        }
-
-        executorService.shutdown();
-        while(!executorService.isTerminated()){}
-        end=System.currentTimeMillis();
-        Log.d("Runnable","現成結束 "+(double)(end-start)/1000);
-
-        progressDialog.hide();
-        progressDialog.dismiss();
+        testBW t=new testBW(this,youbike);
+        //t.execute();
 
     }
 

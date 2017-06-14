@@ -31,6 +31,8 @@ public class testBW extends AsyncTask<String,Integer,String> {
     ArrayList<YouBike> youbikes;
     String city[]={"彰化縣","彰化市","新北市","基隆市","台北市","桃園市","台中市","新竹市"};
 
+    int p=0;
+
     public testBW(Context context, ArrayList<YouBike> youBikes){
         this.context=context;
         this.youbikes=youBikes;
@@ -43,13 +45,14 @@ public class testBW extends AsyncTask<String,Integer,String> {
         progressDialog=new ProgressDialog(context);
         progressDialog.setMessage("載入資料中...");
         progressDialog.setCancelable(false);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMax(youbikes.size());
         progressDialog.show();
     }
 
     @Override
     protected String doInBackground(String... params) {
-        for(int i=0;i<youbikes.size();i++){
+        for(int i=0;i<20;i++){
             String urlcity=getUrl_City(youbikes.get(i).getLat(), youbikes.get(i).getLng());
             openHttp(urlcity);
             readCity(i);
@@ -121,6 +124,7 @@ public class testBW extends AsyncTask<String,Integer,String> {
                     }
                 }
                 if(!youbikes.get(p).getCity().equals("")){
+                    progressDialog.setProgress(p++);
                     flag=false;
                     break;
                 }
