@@ -45,7 +45,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Intent intent;
     ArrayList<YouBike> youBikes;
 
-    private ImageButton navigateBt,backBt;
+    private ImageButton navigateBt,backBt,myLocalBt;
     private Location mLocation;
     private GoogleApiClient mGoogleApiClient;
     protected static final String TAG="MapsActivity";
@@ -81,6 +81,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         backBt=(ImageButton)findViewById(R.id.back);
         backBt.setOnClickListener(BackListener);
 
+        myLocalBt=(ImageButton)findViewById(R.id.gmMyLocalion);
+        myLocalBt.setOnClickListener(MyLocalListener);
+
         intent=getIntent();
         youBikes=(ArrayList<YouBike>) intent.getSerializableExtra(MainActivity.TAG);
         if(intent.getDoubleExtra("Lat",0.0)!=0.0)
@@ -107,7 +110,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         }
 
-        mMap.setMyLocationEnabled(true);                        //點下去移動我的位置  右上角的按鈕
+        //mMap.setMyLocationEnabled(true);                        //點下去移動我的位置  右上角的按鈕
         mMap.setInfoWindowAdapter(InfoWindowAdapter);          //marker點下去跑出資訊視窗
         mMap.setOnMarkerClickListener(markerClickListener);      //marker點下發生事件
         mMap.setOnInfoWindowClickListener(infoWindowClickListener);
@@ -129,6 +132,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onClick(View v) {
             finish();
+        }
+    };
+
+    View.OnClickListener MyLocalListener=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            LatLng myLocal=new LatLng(MyLat,MyLng);             //自己的位置
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocal,15));
         }
     };
 
@@ -185,7 +196,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             tv1.setText("場站名稱:"+youbikeTitle);
             tv2.setText("可借/可停:"+youbikeInfo[0]+"/"+youbikeInfo[1]);
-            tv3.setText("更新時間:"+youbikeInfo[2]);
+
+            StringBuffer sb=new StringBuffer("");
+            sb.append(youbikeInfo[2].substring(0,4)+"/")
+                    .append(youbikeInfo[2].substring(4,6)+"/")
+                    .append(youbikeInfo[2].substring(6,8)+"/")
+                    .append(youbikeInfo[2].substring(8,10)+":")
+                    .append(youbikeInfo[2].substring(10,12)+":")
+                    .append(youbikeInfo[2].substring(12,14));
+            tv3.setText("更新時間:"+sb.toString());
             return viwe;
         }
     };

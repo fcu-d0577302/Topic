@@ -117,7 +117,7 @@ public class ListActivity extends AppCompatActivity {
     AdapterView.OnItemLongClickListener listOnItemLongClick=new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            
+
             if(sp.getString("Value","NULL").equals("NULL")){      //第一次新增,防止下次進入頁面時又是從0開始
                 sp.edit().putString("Value","0").commit();
                 Log.v(SPTAG,sp.getString("Value","NULL")+"");
