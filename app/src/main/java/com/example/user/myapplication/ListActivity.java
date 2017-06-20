@@ -108,7 +108,7 @@ public class ListActivity extends AppCompatActivity {
             Bundle bundle=new Bundle();
             bundle.putDouble("Lat",youBikes.get(position).getLat());
             bundle.putDouble("Lng",youBikes.get(position).getLng());
-            bundle.putSerializable(MainActivity.TAG,youBikes);
+            bundle.putSerializable(MainActivity.TAG,copyYouBikes);
             intent.putExtras(bundle);
             startActivity(intent);
         }

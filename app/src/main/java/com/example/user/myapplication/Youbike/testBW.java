@@ -52,7 +52,7 @@ public class testBW extends AsyncTask<String,Integer,String> {
 
     @Override
     protected String doInBackground(String... params) {
-        for(int i=0;i<20;i++){
+        for(int i=0;i<youbikes.size();i++){
             String urlcity=getUrl_City(youbikes.get(i).getLat(), youbikes.get(i).getLng());
             openHttp(urlcity);
             readCity(i);

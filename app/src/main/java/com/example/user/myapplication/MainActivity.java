@@ -2,10 +2,12 @@
 package com.example.user.myapplication;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -86,11 +88,6 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     private OnClickListener btnw = new OnClickListener() {
         @Override
         public void onClick(View v) {
-
-            /*System.out.println(youBikes.size());
-            for(int i=0;i<youBikes.size();i++){
-                System.out.println(i+":"+youBikes.get(i).getCity());
-            }*/
             Uri uri = Uri.parse("http://www.cwb.gov.tw/V7/forecast/week/week.htm");//交通部中央氣象局
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
@@ -166,7 +163,16 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.maker) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("製作者名單")
+                    .setMessage("D0411303 黃柏勛\nD0544874 曹思璐\nD0577302 林峻逸\nD0514534 蔡尚霖")
+                    .setPositiveButton("關閉", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).show();
             return true;
         }
 

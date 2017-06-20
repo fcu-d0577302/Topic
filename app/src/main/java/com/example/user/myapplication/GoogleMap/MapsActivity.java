@@ -38,7 +38,7 @@ import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener
-        ,DirectionFinderListener{
+        ,DirectionFinderListener,GoogleMap.InfoWindowAdapter{
 
     private GoogleMap mMap;
 
@@ -86,6 +86,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         intent=getIntent();
         youBikes=(ArrayList<YouBike>) intent.getSerializableExtra(MainActivity.TAG);
+        if(intent!=null){
+            Log.d("MAPYOUBIKE",youBikes.size()+"");
+        }
         if(intent.getDoubleExtra("Lat",0.0)!=0.0)
             lat=intent.getDoubleExtra("Lat",0.0);
         if(intent.getDoubleExtra("Lng",0.0)!=0.0)
@@ -106,14 +109,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .snippet(getYoubikeInfo(youBikes.get(i)));
             markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
 
-            mMap.addMarker(markerOptions);
 
+            mMap.addMarker(markerOptions);
         }
 
         //mMap.setMyLocationEnabled(true);                        //點下去移動我的位置  右上角的按鈕
-        mMap.setInfoWindowAdapter(InfoWindowAdapter);          //marker點下去跑出資訊視窗
+        mMap.setInfoWindowAdapter(this);          //marker點下去跑出資訊視窗
         mMap.setOnMarkerClickListener(markerClickListener);      //marker點下發生事件
         mMap.setOnInfoWindowClickListener(infoWindowClickListener);
+
 
         LatLng fcu=new LatLng(lat,lng);             //預設逢甲大學
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(fcu,15));
@@ -139,7 +143,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onClick(View v) {
             LatLng myLocal=new LatLng(MyLat,MyLng);             //自己的位置
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocal,15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocal,17));
+            MarkerOptions markerOptions=new MarkerOptions();
+            markerOptions.position(myLocal);
+            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker));
+            mMap.addMarker(markerOptions);
         }
     };
 
@@ -177,37 +185,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     };
 
-    GoogleMap.InfoWindowAdapter InfoWindowAdapter=new GoogleMap.InfoWindowAdapter() {
+    /*GoogleMap.InfoWindowAdapter InfoWindowAdapter=new GoogleMap.InfoWindowAdapter() {
         @Override
         public View getInfoWindow(Marker marker) {
+
             return null;
         }
 
         @Override
         public View getInfoContents(Marker marker) {          //如果這個false 才會呼叫上面的
-            String youbikeTitle=marker.getTitle();
-            String youbikeInfo[]=marker.getSnippet().split("\n");
-
-            View viwe=getLayoutInflater().inflate(R.layout.infolayout,null);
-            TextView tv1=(TextView) viwe.findViewById(R.id.ybTv1);
-            TextView tv2=(TextView) viwe.findViewById(R.id.ybTv2);
-            TextView tv3=(TextView) viwe.findViewById(R.id.ybTv3);
 
 
-            tv1.setText("場站名稱:"+youbikeTitle);
-            tv2.setText("可借/可停:"+youbikeInfo[0]+"/"+youbikeInfo[1]);
-
-            StringBuffer sb=new StringBuffer("");
-            sb.append(youbikeInfo[2].substring(0,4)+"/")
-                    .append(youbikeInfo[2].substring(4,6)+"/")
-                    .append(youbikeInfo[2].substring(6,8)+"/")
-                    .append(youbikeInfo[2].substring(8,10)+":")
-                    .append(youbikeInfo[2].substring(10,12)+":")
-                    .append(youbikeInfo[2].substring(12,14));
-            tv3.setText("更新時間:"+sb.toString());
-            return viwe;
         }
-    };
+    };*/
 
     private void sendRequest(double myLat,double myLng,double youbikeLat,double youbikeLng) {
         String origin="origin=" + myLat + "," +myLng;
@@ -281,15 +271,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for (Route routes : route) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(routes.startLocation, 16));
 
-            /*originMarkers.add(mMap.addMarker(new MarkerOptions()
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
-                    .title(routes.startAddress)
-                    .position(routes.startLocation)));
-            destinationMarkers.add(mMap.addMarker(new MarkerOptions()
-                    //.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker))
-                    .title("cow meal")
-                    .position(routes.endLocation)));*/
-
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
                     color(Color.BLUE).
@@ -316,4 +297,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    @Override
+    public View getInfoWindow(Marker marker) {
+        String youbikeTitle=marker.getTitle();
+        String youbikeInfo[]=marker.getSnippet().split("\n");
+
+        View viwe=getLayoutInflater().inflate(R.layout.infolayout,null);
+        TextView tv1=(TextView) viwe.findViewById(R.id.ybTv1);
+        TextView tv2=(TextView) viwe.findViewById(R.id.ybTv2);
+        TextView tv3=(TextView) viwe.findViewById(R.id.ybTv3);
+
+        StringBuffer sb=new StringBuffer("");
+        sb.append(youbikeInfo[2].substring(0,4)+"/")
+                .append(youbikeInfo[2].substring(4,6)+"/")
+                .append(youbikeInfo[2].substring(6,8)+"/")
+                .append(youbikeInfo[2].substring(8,10)+":")
+                .append(youbikeInfo[2].substring(10,12)+":")
+                .append(youbikeInfo[2].substring(12,14));
+
+        tv1.setText("場站名稱:"+youbikeTitle);
+        tv2.setText("可借/可停:"+youbikeInfo[0]+"/"+youbikeInfo[1]);
+        tv3.setText("更新時間:"+sb.toString());
+
+
+        return viwe;
+
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+        return null;
+    }
 }
