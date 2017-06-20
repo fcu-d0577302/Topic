@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     private void admob(){
         AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB")
-                .addTestDevice("BD34A9A0939A0A4AF862F98AB60A85E4")
+                //.addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB")
+                //.addTestDevice("BD34A9A0939A0A4AF862F98AB60A85E4")
                 .build(); //測試用廣告
         //我的ASUS手機 BD34A9A0939A0A4AF862F98AB60A85E4
         Log.d("DEVICE_ID_EMULATOR",AdRequest.DEVICE_ID_EMULATOR);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements FunctionListener{
     @Override
     public void setYouBikeCity(ArrayList<YouBike> youbike){
         testBW t=new testBW(this,youbike);
-        //t.execute();
+        t.execute();
 
     }
 
